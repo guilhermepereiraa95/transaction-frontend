@@ -1,0 +1,26 @@
+{
+    "transactions": "Transactions",
+    "new_transaction": "New Transaction",
+    "amount": "Amount",
+    "description": "Description",
+    "type": "Type",
+    "income": "Income",
+    "expense": "Expense",
+    "total": "Total",
+    "loading": "Loading...",
+    "modal_type_select": "Transaction type",
+    "add": "Add",    
+    "filter_by_type": "Filter by type",
+    "filter_by_date": "Filter by date",
+    "all": "All",
+    "last_30_days": "Last 30 days",
+    "last_7_days": "Last 7 days",
+    "this_year": "This year",
+    "search_transaction": "Search transaction",
+    "no_transactions_found": "No transactions found",
+    "clear_filters": "Clear filters",
+    "amount_required": "Amount is required",
+    "description_required": "Description is required"
+  }
+  
+  

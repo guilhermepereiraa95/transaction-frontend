@@ -1,0 +1,25 @@
+{
+    "transactions": "Transacciones",
+    "new_transaction": "Nueva Transacción",
+    "amount": "Valor",
+    "description": "Descripción",
+    "type": "Tipo",
+    "income": "Entrada",
+    "expense": "Salida",
+    "total": "Total",
+    "loading": "Cargando...",
+    "modal_type_select": "Tipo de transacción",
+    "add": "Agregar",
+    "filter_by_type": "Filtrar por tipo",
+    "filter_by_date": "Filtrar por fecha",
+    "all": "Todos",
+    "last_30_days": "Últimos 30 días",
+    "last_7_days": "Últimos 7 días",
+    "this_year": "Este año",
+    "search_transaction": "Buscar transacción",
+    "no_transactions_found": "No se encontraron transacciones",
+    "clear_filters": "Limpiar filtros",
+    "amount_required": "El valor es requerido",
+    "description_required": "La descripción es requerida"
+  }
+  
