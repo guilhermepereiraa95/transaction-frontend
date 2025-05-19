@@ -20,7 +20,7 @@
     "no_transactions_found": "No transactions found",
     "clear_filters": "Clear filters",
     "amount_required": "Amount is required",
-    "description_required": "Description is required"
+    "type_required": "Type is required"
   }
   
   

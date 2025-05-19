@@ -20,6 +20,6 @@
     "no_transactions_found": "No se encontraron transacciones",
     "clear_filters": "Limpiar filtros",
     "amount_required": "El valor es requerido",
-    "description_required": "La descripción es requerida"
+    "type_required": "El tipo es requerido"
   }
   

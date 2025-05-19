@@ -20,5 +20,5 @@
     "no_transactions_found": "Nenhuma transação encontrada",
     "clear_filters": "Limpar filtros",
     "amount_required": "O valor é obrigatório",
-    "description_required": "A descrição é obrigatória"
+    "type_required": "O tipo é obrigatório"
   }
