@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "next-i18next";
 import dayjs from "dayjs";
+import { useDebounce } from "use-debounce";
 import api from "../services/api";
 import { TransactionModal } from "../ui/Modal";
 import { TrashIcon } from "@heroicons/react/24/solid";
@@ -26,14 +27,13 @@ function formatCurrency(value: number) {
 export default function Transactions() {
   const { t } = useTranslation("common");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [filteredTransactions, setFilteredTransactions] = useState<
-    Transaction[]
-  >([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [dateFilter, setDateFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
   const [textFilter, setTextFilter] = useState("");
+  const [debouncedTextFilter] = useDebounce(textFilter, 400);
+
   const clearFilters = () => {
     setDateFilter("all");
     setTypeFilter("all");
@@ -43,10 +43,6 @@ export default function Transactions() {
   useEffect(() => {
     fetchTransactions();
   }, []);
-
-  useEffect(() => {
-    applyFilters();
-  }, [dateFilter, typeFilter, textFilter, transactions]);
 
   async function fetchTransactions() {
     setLoading(true);
@@ -69,21 +65,18 @@ export default function Transactions() {
     }
   }
 
-  function applyFilters() {
+  const filteredTransactions = useMemo(() => {
     const now = dayjs();
     let filtered = [...transactions];
 
-    if (dateFilter === "7days") {
+    if (dateFilter !== "all") {
+      const ranges: Record<string, dayjs.Dayjs> = {
+        "7days": now.subtract(7, "day"),
+        "30days": now.subtract(30, "day"),
+        "year": now.startOf("year"),
+      };
       filtered = filtered.filter((t) =>
-        dayjs(t.created_at).isAfter(now.subtract(7, "day"))
-      );
-    } else if (dateFilter === "30days") {
-      filtered = filtered.filter((t) =>
-        dayjs(t.created_at).isAfter(now.subtract(30, "day"))
-      );
-    } else if (dateFilter === "year") {
-      filtered = filtered.filter((t) =>
-        dayjs(t.created_at).isAfter(now.startOf("year"))
+        dayjs(t.created_at).isAfter(ranges[dateFilter])
       );
     }
 
@@ -91,8 +84,8 @@ export default function Transactions() {
       filtered = filtered.filter((t) => t.type === typeFilter);
     }
 
-    if (textFilter.trim()) {
-      const search = textFilter.toLowerCase();
+    if (debouncedTextFilter.trim()) {
+      const search = debouncedTextFilter.toLowerCase();
       filtered = filtered.filter(
         (t) =>
           t.description.toLowerCase().includes(search) ||
@@ -100,16 +93,16 @@ export default function Transactions() {
       );
     }
 
-    setFilteredTransactions(filtered);
-  }
+    return filtered;
+  }, [transactions, dateFilter, typeFilter, debouncedTextFilter]);
 
-  function calculateTotal() {
+  const total = useMemo(() => {
     return filteredTransactions.reduce((total, transaction) => {
       return transaction.type === "income"
         ? total + transaction.amount
         : total - transaction.amount;
     }, 0);
-  }
+  }, [filteredTransactions]);
 
   return (
     <div className="p-8 max-w-6xl mx-auto min-h-screen bg-green-50/50 backdrop-blur-sm shadow-sm">
@@ -134,13 +127,17 @@ export default function Transactions() {
           className="w-full md:w-1/2 bg-white border border-gray-300 rounded-lg px-4 py-2 shadow-sm"
         />
 
-        <div className={`mt-10 flex items-center gap-3 p-4 rounded-lg shadow-md text-xl font-bold
-        ${calculateTotal() >= 0 ? "bg-green-100/70 text-green-900" : "bg-red-100/70 text-red-900"}`}
-            >
+        <div
+          className={`mt-10 flex items-center gap-3 p-4 rounded-lg shadow-md text-xl font-bold ${
+            total >= 0
+              ? "bg-green-100/70 text-green-900"
+              : "bg-red-100/70 text-red-900"
+          }`}
+        >
           <CurrencyDollarIcon className="h-7 w-7" />
           <p>
             <span className="font-semibold">{t("total")}:</span>{" "}
-            {formatCurrency(calculateTotal())}
+            {formatCurrency(total)}
           </p>
         </div>
       </div>
@@ -177,6 +174,7 @@ export default function Transactions() {
           </select>
         </div>
       </div>
+
       <button
         onClick={clearFilters}
         className="text-sm text-blue-600 hover:underline cursor-pointer my-4"
@@ -200,7 +198,7 @@ export default function Transactions() {
                 className="absolute top-2 right-2 text-red-500 hover:text-red-700"
                 title={t("delete")}
               >
-                <TrashIcon className="h-5 w-5" />
+                <TrashIcon className="h-5 w-5" aria-label="Delete Transaction" />
               </button>
               <p className="text-lg font-bold text-gray-700 mb-2">
                 {formatCurrency(transaction.amount)}
