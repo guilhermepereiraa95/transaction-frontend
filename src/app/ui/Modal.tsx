@@ -9,6 +9,7 @@ import api from "@/app/services/api";
 import { TransactionType } from "../enums/transactionType";
 import { useTranslation } from "react-i18next";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { toast } from "react-toastify";
 
 function maskCurrency(value: string) {
   const numericValue = value.replace(/\D/g, "");
@@ -78,9 +79,11 @@ export function TransactionModal({
       });
       reset();
       onSuccess();
+      toast.success(t("request_success"));
       onClose();
     } catch (error) {
-      console.error("Erro ao criar transação", error);
+      toast.error(t("request_error"));
+      onClose();
     }
   }
 

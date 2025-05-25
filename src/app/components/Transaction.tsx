@@ -8,6 +8,7 @@ import api from "../services/api";
 import { TransactionModal } from "../ui/Modal";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { CurrencyDollarIcon } from "@heroicons/react/24/outline";
+import { toast } from "react-toastify";
 
 interface Transaction {
   id: string;
@@ -50,7 +51,7 @@ export default function Transactions() {
       const response = await api.get<Transaction[]>("/transactions");
       setTransactions(response.data);
     } catch (error) {
-      console.error("Erro ao buscar transações", error);
+      toast.error(t("request_error"));
     } finally {
       setLoading(false);
     }
@@ -60,8 +61,9 @@ export default function Transactions() {
     try {
       await api.delete(`/transactions/${id}`);
       fetchTransactions();
+      toast.success(t("request_success"));
     } catch (error) {
-      console.error("Erro ao deletar transação", error);
+      toast.error(t("request_error"));
     }
   }
 

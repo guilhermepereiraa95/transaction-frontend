@@ -20,7 +20,9 @@
     "no_transactions_found": "No transactions found",
     "clear_filters": "Clear filters",
     "amount_required": "Amount is required",
-    "type_required": "Type is required"
+    "type_required": "Type is required",
+    "request_error": "Error performing the operation",
+    "request_success": "Operation performed successfully"
   }
   
   
